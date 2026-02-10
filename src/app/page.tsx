@@ -1,4 +1,5 @@
 import Hero from "@/components/Hero";
+import AgentSection from "@/components/AgentSection"; // Import the new component
 import Expertise from "@/components/Expertise";
 import Projects from "@/components/Projects";
 import Security from "@/components/Security";
@@ -8,6 +9,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-deep-space">
       <Hero />
+      <AgentSection />
       <Expertise />
       <Projects />
       <Security />
