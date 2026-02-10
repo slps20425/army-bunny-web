@@ -173,12 +173,10 @@ export default function AgentShowcase({ agent, scenario, className = "" }: Agent
                         {/* Gradient Overlay */}
                         <div className="absolute inset-0 bg-gradient-to-t from-deep-space via-transparent to-transparent"></div>
 
-                        {/* Status Indicator */}
-                        <div className="relative z-10 flex flex-col items-center mt-8">
-                            <div className="w-8 h-8 border-2 border-electric-blue/30 border-t-electric-blue rounded-full animate-spin mb-3 shadow-[0_0_15px_rgba(14,165,233,0.3)]" />
-                            <div className="text-xs text-gray-400 font-mono tracking-wider bg-black/50 px-2 py-1 rounded border border-white/5">
-                                {currentState}.json
-                            </div>
+                        {/* Status Indicator (Pulse Effect instead of Spinner) */}
+                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                            <div className="w-32 h-32 rounded-full border border-white/5 bg-white/5 animate-ping opacity-20" />
+                            <div className="absolute w-48 h-48 rounded-full border border-white/5 animate-pulse opacity-10" />
                         </div>
                     </div>
                 )}
