@@ -134,20 +134,6 @@ export default function AgentShowcase({ agent, scenario, className = "" }: Agent
                         {agent === 'wisecat' ? 'WiseCat' : 'Bunny'} · On Duty
                     </span>
                 </div>
-
-                {/* Developer-facing Prompt Reference (Founder-grade detail) */}
-                <div className="group relative">
-                    <span className="text-xs text-gray-500 cursor-help border-b border-dashed border-gray-600">
-                        View Prompt Intent
-                    </span>
-                    <div className="absolute right-0 top-6 w-64 p-3 rounded-lg bg-black border border-white/10 text-xs text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity z-10 pointer-events-none">
-                        <div className="font-bold text-white mb-1">System Prompt Intent:</div>
-                        <div>{currentPrompt?.task}</div>
-                        <div className="mt-2 text-gray-500 font-mono">
-                            state: {currentState}
-                        </div>
-                    </div>
-                </div>
             </div>
 
             {/* Lottie Animation Display */}
