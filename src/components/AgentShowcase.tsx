@@ -147,13 +147,13 @@ export default function AgentShowcase({ agent, scenario, className = "" }: Agent
                 ) : (
                     <>
                         {/* Logo Fallback with Specific CSS Animations */}
-                        <div className="absolute inset-0 p-12 flex items-center justify-center">
+                        <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
                             <div className={`relative w-full h-full ${agent === 'wisecat' ? 'animate-pulse-slow' : ''}`}>
                                 <Image
                                     src={agent === 'wisecat' ? '/wise_cat.jpg' : '/ArmyBunny_Logo.png'}
                                     alt={`${agent} logo`}
                                     fill
-                                    className={`object-contain transition-opacity duration-500 ${agent === 'wisecat' ? 'opacity-50' : 'opacity-60'}`}
+                                    className="object-cover"
                                 />
 
                                 {/* Bunny Scanner Effect */}
