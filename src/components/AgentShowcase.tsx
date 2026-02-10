@@ -2,17 +2,11 @@
 
 import { useEffect, useState } from "react";
 import Lottie from "lottie-react";
+import Image from "next/image";
 
 // ------------------------------------------------------------------
 // 1. Define Agent Animation Maps (The Single Source of Truth)
 // ------------------------------------------------------------------
-
-// Placeholder: In production, these should be actual JSON imports or URLs
-// Ideally, import them like: import wisecatCalling from '../../public/animations/wisecat_calling.json';
-// For now, we simulate with paths (lottie-react can handle paths in some configs or you fetch them).
-// BETTER: Lottie component usually takes the JSON object.
-// I will setup a fetcher or just assume the user will drop files in public/animations/*.json and use path based loading.
-// Actually lottie-react 'animationData' expects the JSON object. I will implement a loader.
 
 const AGENT_ANIMATIONS = {
     wisecat: {
@@ -110,13 +104,17 @@ export default function AgentShowcase({ agent, scenario, className = "" }: Agent
         if (animPath) {
             fetch(animPath)
                 .then(res => {
-                    if (!res.ok) throw new Error("Animation not found");
+                    if (!res.ok) {
+                        setAnimationData(null);
+                        return;
+                    }
                     return res.json();
                 })
-                .then(data => setAnimationData(data))
-                .catch(err => {
-                    console.warn(`Failed to load animation: ${animPath}`, err);
-                    setAnimationData(null); // Fallback to loading/error state
+                .then(data => {
+                    if (data) setAnimationData(data);
+                })
+                .catch(() => {
+                    setAnimationData(null);
                 });
         }
     }, [agent, currentState]);
@@ -161,20 +159,32 @@ export default function AgentShowcase({ agent, scenario, className = "" }: Agent
                         className="w-full h-full"
                     />
                 ) : (
-                    <div className="text-center p-4">
-                        <div className="text-4xl mb-2">
-                            {agent === 'wisecat' ? '🐱📞' : '🐰📊'}
+                    <div className="relative w-full h-full flex flex-col items-center justify-center">
+                        {/* Logo Fallback as requested */}
+                        <div className="absolute inset-0 p-12 opacity-40 grayscale-0 group-hover:opacity-60 transition-opacity duration-500">
+                            <Image
+                                src={agent === 'wisecat' ? '/wise_cat.jpg' : '/ArmyBunny_Logo.png'}
+                                alt={`${agent} logo`}
+                                fill
+                                className="object-contain"
+                            />
                         </div>
-                        <div className="text-xs text-gray-500 font-mono">
-                            {currentState}.json
+
+                        {/* Gradient Overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-deep-space via-transparent to-transparent"></div>
+
+                        {/* Status Indicator */}
+                        <div className="relative z-10 flex flex-col items-center mt-8">
+                            <div className="w-8 h-8 border-2 border-electric-blue/30 border-t-electric-blue rounded-full animate-spin mb-3 shadow-[0_0_15px_rgba(14,165,233,0.3)]" />
+                            <div className="text-xs text-gray-400 font-mono tracking-wider bg-black/50 px-2 py-1 rounded border border-white/5">
+                                {currentState}.json
+                            </div>
                         </div>
-                        {/* Placeholder fallback for when JSON is missing */}
-                        <div className="mt-4 w-12 h-12 border-2 border-white/10 border-t-white/50 rounded-full animate-spin mx-auto" />
                     </div>
                 )}
 
                 {/* Overlay Label (Visual Language) */}
-                <div className="absolute bottom-4 left-4 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-xs font-medium text-white">
+                <div className="absolute bottom-4 left-4 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-xs font-medium text-white z-20">
                     {currentState.toUpperCase()}
                 </div>
             </div>
