@@ -159,26 +159,34 @@ export default function AgentShowcase({ agent, scenario, className = "" }: Agent
                         className="w-full h-full"
                     />
                 ) : (
-                    <div className="relative w-full h-full flex flex-col items-center justify-center">
-                        {/* Logo Fallback as requested */}
-                        <div className="absolute inset-0 p-12 opacity-40 grayscale-0 group-hover:opacity-60 transition-opacity duration-500">
-                            <Image
-                                src={agent === 'wisecat' ? '/wise_cat.jpg' : '/ArmyBunny_Logo.png'}
-                                alt={`${agent} logo`}
-                                fill
-                                className="object-contain"
-                            />
+                    <>
+                        {/* Logo Fallback with Specific CSS Animations */}
+                        <div className="absolute inset-0 p-12 flex items-center justify-center">
+                            <div className={`relative w-full h-full ${agent === 'wisecat' ? 'animate-pulse-slow' : ''}`}>
+                                <Image
+                                    src={agent === 'wisecat' ? '/wise_cat.jpg' : '/ArmyBunny_Logo.png'}
+                                    alt={`${agent} logo`}
+                                    fill
+                                    className={`object-contain transition-opacity duration-500 ${agent === 'wisecat' ? 'opacity-50' : 'opacity-60'}`}
+                                />
+
+                                {/* Bunny Scanner Effect */}
+                                {agent === 'bunny' && (
+                                    <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none rounded-2xl">
+                                        <div className="absolute top-0 left-0 right-0 h-1 bg-neon-green/50 blur-[2px] shadow-[0_0_15px_#22c55e] animate-scan" />
+                                    </div>
+                                )}
+                            </div>
                         </div>
 
                         {/* Gradient Overlay */}
                         <div className="absolute inset-0 bg-gradient-to-t from-deep-space via-transparent to-transparent"></div>
 
-                        {/* Status Indicator (Pulse Effect instead of Spinner) */}
+                        {/* Status Pulse (Background) */}
                         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                            <div className="w-32 h-32 rounded-full border border-white/5 bg-white/5 animate-ping opacity-20" />
-                            <div className="absolute w-48 h-48 rounded-full border border-white/5 animate-pulse opacity-10" />
+                            <div className={`w-32 h-32 rounded-full border border-white/5 bg-white/5 opacity-20 ${agent === 'wisecat' ? 'animate-ping' : 'animate-pulse'}`} />
                         </div>
-                    </div>
+                    </>
                 )}
 
                 {/* Overlay Label (Visual Language) */}
