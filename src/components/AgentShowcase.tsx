@@ -56,11 +56,20 @@ const PROMPT_VISUALS = {
                 success: "Analysis complete. Bias: Bullish.",
             },
         },
+        report: {
+            task: "PDF Report Generation",
+            states: {
+                calculating: "Structuring data points...",
+                analyzing: "Formatting charts & tables...",
+                charting: "Rendering final PDF...",
+                success: "Report dispatched to email.",
+            },
+        },
     },
 };
 
 type AgentType = "wisecat" | "bunny";
-type DemoScenario = "reservation" | "analysis";
+type DemoScenario = "reservation" | "analysis" | "schedule" | "report";
 
 interface AgentShowcaseProps {
     agent: AgentType;
@@ -73,30 +82,37 @@ export default function AgentShowcase({ agent, scenario, className = "" }: Agent
     const [currentState, setCurrentState] = useState<string>("idle");
     const [animationData, setAnimationData] = useState<any>(null);
 
-    // Define the sequence for the demo
-    const sequence =
-        agent === "wisecat"
-            ? ["calling", "confirming", "success"]
-            : ["calculating", "analyzing", "charting", "success"];
+    // List of scenarios to rotate through
+    const scenarios = agent === "wisecat" ? ["reservation", "schedule"] : ["analysis", "report"];
+    const [currentScenarioIndex, setCurrentScenarioIndex] = useState(0);
+    const scenarioKey = scenarios[currentScenarioIndex];
+
+    // Define the sequence of states for the current agent
+    const sequence = agent === "wisecat"
+        ? ["calling", "confirming", "success"]
+        : ["calculating", "analyzing", "charting", "success"];
 
     useEffect(() => {
         let step = 0;
         setCurrentState(sequence[0]);
 
         const interval = setInterval(() => {
-            step = (step + 1) % (sequence.length + 2); // +2 for pause at success
+            step++;
             if (step < sequence.length) {
+                // Next state in the current sequence
                 setCurrentState(sequence[step]);
-            } else {
-                // Pause on success or reset
-                if (step === sequence.length + 1) {
-                    step = -1; // Reset
-                }
+            } else if (step === sequence.length + 2) {
+                // Pause complete, move to next scenario
+                step = 0;
+                setCurrentScenarioIndex((prev) => (prev + 1) % scenarios.length);
+                setCurrentState(sequence[0]);
             }
-        }, 4000); // Change state every 4 seconds
+        }, 3000); // 3 seconds per state
 
         return () => clearInterval(interval);
-    }, [agent, sequence]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [agent, scenarios.length]); // depend on agent to reset if agent changes
+
 
     // Load Lottie JSON based on state
     useEffect(() => {
@@ -120,7 +136,7 @@ export default function AgentShowcase({ agent, scenario, className = "" }: Agent
     }, [agent, currentState]);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const currentPrompt = (PROMPT_VISUALS[agent] as any)[scenario];
+    const currentPrompt = (PROMPT_VISUALS[agent] as any)[scenarioKey];
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const statusText = (currentPrompt?.states as any)?.[currentState] || "Processing...";
 
